@@ -1,68 +1,40 @@
 # binary-store-btree-kit
 
-`binary-store-btree-kit` packages a practical databases exercise in Swift. The emphasis is on deterministic behavior, a small public API, and examples that explain the tradeoffs.
+`binary-store-btree-kit` keeps a focused Swift implementation around databases. The project goal is to develop a Swift command-oriented project for btree scenarios with fixture event logs, golden state snapshots, and no network dependency.
 
-## How I Read Binary Store Btree Kit
+## Why This Exists
 
-The useful thing to inspect here is how the same score rule is represented in code, metadata, and examples. If those three pieces disagree, the audit script should make the drift visible.
+The project exists to keep a narrow engineering decision visible and testable. For this repo, that decision is how index fit and constraint risk should influence a review result.
 
-## Problem Shape
+## Binary Store Btree Kit Review Notes
 
-This is not a wrapper around a service. It is a self-contained project that shows how the model behaves when demand, capacity, latency, risk, and weight move in different directions.
+For a quick review, compare `constraint risk` with `join width` before reading the middle cases.
 
-## Scenario Walkthrough
+## Capabilities
 
-`degraded` is the first example I would inspect because it lands on the `review` path with a score of 10. The broader file also keeps `degraded` at 10 and `surge` at 257, which gives the model a useful low-to-high spread.
+- `fixtures/domain_review.csv` adds cases for index fit and join width.
+- `metadata/domain-review.json` records the same cases in structured form.
+- `config/review-profile.json` captures the read order and the two review questions.
+- `examples/binary-store-btree-walkthrough.md` walks through the case spread.
+- The Swift code includes a review path for `constraint risk` and `join width`.
+- `docs/field-notes.md` explains the strongest and weakest cases.
 
-## Internal Model
+## Implementation Shape
 
-The interesting part is the boundary between accepted and reviewed scenarios. Extended examples sit near that boundary so future edits can show whether the model became more permissive or more cautious. The Swift project compiles a minimal command-line test harness against the local Windows SDK.
+The implementation keeps the scoring rule plain: reward signal and confidence, preserve slack, penalize drag, then classify the result into a review lane.
 
-## Main Behaviors
+The Swift implementation avoids hidden state so fixture changes are easy to reason about.
 
-- Models schema shape with deterministic scoring and explicit review decisions.
-- Uses fixture data to keep query checks changes visible in code review.
-- Includes extended examples for fixture rows, including `surge` and `degraded`.
-- Documents constraint behavior tradeoffs in `docs/operations.md`.
-- Runs locally with a single verification command and no external credentials.
-
-## How To Run It
+## Local Usage
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify.ps1
 ```
 
-This runs the language-level build or test path against the compact fixture set.
+## Verification
 
-## Validation
+The check exercises the source code and the review fixture. `edge` is the high score at 207; `stress` is the low score at 134.
 
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/audit.ps1
-```
+## Roadmap
 
-The audit command checks repository structure and README constraints before it delegates to the verifier.
-
-## Repository Map
-
-- `src`: primary implementation
-- `tests`: verification harness
-- `fixtures`: compact golden scenarios
-- `examples`: expanded scenario set
-- `metadata`: project constants and verification metadata
-- `docs`: operations and extension notes
-- `scripts`: local verification and audit commands
-
-## Follow-Up Work
-
-- Add a loader for `examples/extended_cases.csv` and promote selected cases into the language test suite.
-- Add a short report command that prints the score breakdown for a single scenario.
-- Add malformed input fixtures so the failure path is as visible as the happy path.
-- Add one more databases fixture that focuses on a malformed or borderline input.
-
-## Known Edges
-
-The examples cover useful edges, not every edge. A larger version would add malformed-input tests, richer reports, and deeper domain parsers.
-
-## Run It Locally
-
-Install Swift and run the commands from the repository root. The project does not need credentials or a hosted service.
+No external service is required. A deeper version would add more negative cases and a clearer boundary around invalid input.

@@ -1,0 +1,73 @@
+{
+  "repo": "binary-store-btree-kit",
+  "language": "Swift",
+  "category": "Databases",
+  "goal": "Develop a Swift command-oriented project for btree scenarios with fixture event logs, golden state snapshots, and no network dependency.",
+  "review_model": {
+    "terms": [
+      "index fit",
+      "join width",
+      "constraint risk",
+      "plan drift"
+    ],
+    "lanes": [
+      "ship",
+      "watch",
+      "hold"
+    ],
+    "score": "signal * 2 + slack + confidence - drag * 3",
+    "purpose": "surface the domain-specific cases that need the most careful review"
+  },
+  "cases": [
+    {
+      "name": "baseline",
+      "focus": "index fit",
+      "signal": 65,
+      "slack": 29,
+      "drag": 13,
+      "confidence": 56,
+      "score": 176,
+      "lane": "ship"
+    },
+    {
+      "name": "stress",
+      "focus": "join width",
+      "signal": 66,
+      "slack": 35,
+      "drag": 31,
+      "confidence": 60,
+      "score": 134,
+      "lane": "watch"
+    },
+    {
+      "name": "edge",
+      "focus": "constraint risk",
+      "signal": 59,
+      "slack": 49,
+      "drag": 11,
+      "confidence": 73,
+      "score": 207,
+      "lane": "ship"
+    },
+    {
+      "name": "recovery",
+      "focus": "plan drift",
+      "signal": 60,
+      "slack": 37,
+      "drag": 15,
+      "confidence": 52,
+      "score": 164,
+      "lane": "ship"
+    },
+    {
+      "name": "stale",
+      "focus": "index fit",
+      "signal": 68,
+      "slack": 49,
+      "drag": 27,
+      "confidence": 59,
+      "score": 163,
+      "lane": "ship"
+    }
+  ]
+}
